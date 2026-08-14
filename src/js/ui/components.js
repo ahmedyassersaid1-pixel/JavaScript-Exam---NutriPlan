@@ -78,7 +78,7 @@ export function displayAreas(areas) {
   for (let i = 0; i < areas.length; i++) {
     cartona += `<button
               class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium text-sm whitespace-nowrap hover:bg-gray-200 transition-all"
-            data-area["${areas[i].name}"]
+            data-area="${areas[i].name}"
               >
               ${areas[i].name}
             </button>`;

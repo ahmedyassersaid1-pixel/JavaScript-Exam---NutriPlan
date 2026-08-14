@@ -12,6 +12,7 @@ import {
   getMealById,
   getSearchData,
   searchCategoey,
+  searchByArea,
 } from "./api/mealdb.js";
 import {
   displayMeals,
@@ -69,8 +70,34 @@ input.addEventListener("input", async function (e) {
     displayMeals(data.results);
   }
 });
-const iconClick = document.querySelectorAll(".category-card");
 
+
+
+// click on  country
+const areasContainer = document.getElementById("areas-container")
+areasContainer.addEventListener("click",async function (e) {
+  const area = e.target.closest("#areas-container button")  
+  const areaName = area.dataset.area
+  // console.log(areaName);
+  let data = await searchByArea(areaName)
+  // console.log(data.results);
+    recipesCount.textContent = `Showing ${data.results.length} ${areaName} recipes`;
+
+  if (data.results == null || data.results.length === 0) {
+    recipesContainer.innerHTML = `<div class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+        <i class="fa-solid fa-search text-gray-400 text-2xl"></i>
+        </div>
+        <p class="text-gray-500 text-lg">No recipes found</p>
+        <p class="text-gray-400 text-sm mt-2">Try searching for something else</p>
+    </div>`;
+  } else {
+    displayMeals(data.results);
+  }
+})
+
+const iconClick = document.querySelectorAll(".category-card");
+// icons click to display
 for (let i = 0; i < iconClick.length; i++) {
   iconClick[i].addEventListener("click", async function (e) {
     const card = e.target.closest(".category-card");
@@ -83,5 +110,4 @@ for (let i = 0; i < iconClick.length; i++) {
   });
 }
 
-// console.log(meals);
-// console.log(area.results);
+// 
