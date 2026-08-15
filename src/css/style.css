@@ -4,3 +4,582 @@
 .d-none{
   display: none;
 }
+.mx-auto{
+  margin: auto;
+}
+.nutrition-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.nutrition-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #d1fae5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.nutrition-icon i {
+  color: #34d399;
+  font-size: 20px;
+}
+
+.nutrition-loading h3 {
+  margin: 0 0 5px;
+  color: #374151;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.nutrition-loading p {
+  margin: 0 0 20px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+}
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-8px);
+  }
+}
+/* modal */
+.product-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  z-index: 9999;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition: 0.25s ease;
+}
+
+.product-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  position: relative;
+
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+
+  background: white;
+  border-radius: 18px;
+
+  padding: 26px;
+
+  overflow-y: auto;
+
+  transform: translateY(20px);
+  transition: 0.25s ease;
+}
+
+.product-modal.show .modal-content {
+  transform: translateY(0);
+}
+
+/* Close */
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+
+  border: 0;
+  background: transparent;
+
+  font-size: 36px;
+  line-height: 1;
+
+  color: #9ca3af;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.modal-close:hover {
+  color: #111827;
+}
+
+/* Header */
+
+.modal-header {
+  display: flex;
+  gap: 25px;
+
+  padding-right: 35px;
+}
+
+.product-modal-image {
+  width: 140px;
+  height: 140px;
+
+  flex-shrink: 0;
+
+  background: #f3f4f6;
+  border-radius: 14px;
+
+  overflow: hidden;
+}
+
+.product-modal-image img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+}
+
+.product-modal-info {
+  padding-top: 5px;
+}
+
+.modal-brand {
+  display: block;
+
+  color: #00a878;
+  font-size: 15px;
+  font-weight: 700;
+
+  margin-bottom: 5px;
+}
+
+.product-modal-info h2 {
+  margin: 0 0 10px;
+
+  color: #111827;
+
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.product-modal-info p {
+  margin: 0 0 20px;
+
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* Nutri score */
+
+.nutri-score {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.score {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #9ca3af; /* fallback/default */
+  color: white;
+
+  border-radius: 6px;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Dynamic Nutri-Score grade colors (A best -> E worst) */
+.score.grade-a {
+  background: #00a878;
+}
+
+.score.grade-b {
+  background: #85c93a;
+}
+
+.score.grade-c {
+  background: #f5c518;
+}
+
+.score.grade-d {
+  background: #f97316;
+}
+
+.score.grade-e {
+  background: #dc2626;
+}
+
+.nutri-score strong {
+  display: block;
+
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.nutri-score small {
+  display: block;
+
+  color: #6b7280;
+  font-size: 12px;
+}
+
+/* Optional: color the "Bad / Good" label to match the grade */
+.nutri-score small.label-good {
+  color: #00a878;
+}
+
+.nutri-score small.label-fair {
+  color: #f5c518;
+}
+
+.nutri-score small.label-bad {
+  color: #dc2626;
+}
+
+/* Nutrition */
+
+.nutrition-box {
+  margin-top: 35px;
+
+  padding: 25px;
+
+  background: #effcf7;
+
+  border: 1px solid #b7f1dc;
+
+  border-radius: 15px;
+}
+
+.nutrition-box h3 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 18px;
+}
+
+.nutrition-box h3 span {
+  color: #00a878;
+  margin-right: 5px;
+}
+
+.nutrition-box h3 small {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* Calories */
+
+.calories {
+  text-align: center;
+
+  padding: 25px 0;
+
+  border-bottom: 1px solid #b7e9d8;
+}
+
+.calories strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 42px;
+  line-height: 1;
+
+  margin-bottom: 5px;
+}
+
+.calories span {
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* Main nutrition */
+
+.nutrition-items {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 20px;
+
+  padding: 18px 0;
+
+  border-bottom: 1px solid #b7e9d8;
+}
+
+.nutrition-item {
+  text-align: center;
+}
+
+.nutrition-line {
+  width: 100%;
+  height: 8px;
+
+  background: #e5e7eb;
+
+  border-radius: 20px;
+
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.nutrition-line span {
+  display: block;
+
+  width: 15%; /* default; override inline via JS with the real percentage */
+  height: 100%;
+
+  border-radius: inherit;
+
+  transition: width 0.3s ease;
+}
+
+.protein .nutrition-line span {
+  background: #10b981;
+}
+
+.carbs .nutrition-line span {
+  background: #3b82f6;
+}
+
+.fat .nutrition-line span {
+  background: #9333ea;
+}
+
+.sugar .nutrition-line span {
+  background: #f97316;
+}
+
+.nutrition-item strong {
+  display: block;
+
+  font-size: 20px;
+}
+
+.nutrition-item small {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* Extra nutrition */
+
+.nutrition-extra {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  text-align: center;
+
+  padding-top: 20px;
+}
+
+.nutrition-extra strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 16px;
+
+  margin-bottom: 5px;
+}
+
+.nutrition-extra span {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* Buttons */
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 12px;
+
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  height: 52px;
+
+  border: 0;
+  border-radius: 12px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.log-food-btn {
+  background: #00a878;
+  color: white;
+}
+
+.log-food-btn:hover {
+  background: #008f66;
+}
+
+.close-btn {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.close-btn:hover {
+  background: #e5e7eb;
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+
+  .modal-content {
+    padding: 18px;
+  }
+
+  .modal-header {
+    gap: 15px;
+  }
+
+  .product-modal-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .product-modal-info h2 {
+    font-size: 20px;
+  }
+
+  .nutrition-items {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nutrition-extra {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .modal-actions {
+    grid-template-columns: 1fr;
+  }
+}
+/* ////////// */
+/* NOVA badge colors */
+.score.nova-1 { background: #00a878; }
+.score.nova-2 { background: #85c93a; }
+.score.nova-3 { background: #f97316; }
+.score.nova-4 { background: #dc2626; }
+/* Container that holds both score cards side by side */
+.modal-scores {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+/* Base card style shared by Nutri-Score and NOVA boxes */
+.nutri-score,
+.nova-score {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 16px;
+  border-radius: 12px;
+
+  background: #f3f4f6; /* fallback/default (grey) */
+}
+
+.nutri-score strong,
+.nova-score strong {
+  display: block;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.nutri-score small,
+.nova-score small {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280; /* fallback */
+}
+
+/* ---------- Nutri-Score card backgrounds + label colors ---------- */
+
+.nutri-score.grade-a { background: #d1fae5; }
+.nutri-score.grade-a small { color: #00a878; }
+
+.nutri-score.grade-b { background: #ecfccb; }
+.nutri-score.grade-b small { color: #65a30d; }
+
+.nutri-score.grade-c { background: #fef9c3; }
+.nutri-score.grade-c small { color: #ca8a04; }
+
+.nutri-score.grade-d { background: #ffedd5; }
+.nutri-score.grade-d small { color: #ea580c; }
+
+.nutri-score.grade-e { background: #fee2e2; }
+.nutri-score.grade-e small { color: #dc2626; }
+
+/* ---------- NOVA card backgrounds + label colors ---------- */
+
+.nova-score.nova-1 { background: #d1fae5; }
+.nova-score.nova-1 small { color: #00a878; }
+
+.nova-score.nova-2 { background: #ecfccb; }
+.nova-score.nova-2 small { color: #65a30d; }
+
+.nova-score.nova-3 { background: #ffedd5; }
+.nova-score.nova-3 small { color: #ea580c; }
+
+.nova-score.nova-4 { background: #fee2e2; }
+.nova-score.nova-4 small { color: #dc2626; }

@@ -224,7 +224,7 @@ export function displayMeal(meal) {
   allRecipes.classList.add("d-none");
   mealDetails.classList.remove("d-none");
 
-  console.log(meal);
+  // console.log(meal);
 
   const image = document.getElementById("hero-image");
   const headText = document.getElementById("head-text");
@@ -235,14 +235,24 @@ export function displayMeal(meal) {
   image.setAttribute("src", meal.result.thumbnail);
   headText.textContent = meal.result.name;
   span.textContent = meal.result.category;
-  if (meal.result.area) {
-    span.nextElementSibling.textContent = meal.result.area;
-  }
-  if (meal.result.tags) {
-    span.nextElementSibling.nextElementSibling.textContent =
-      meal.result.tags[0];
-    span.nextElementSibling.nextElementSibling.nextElementSibling.textContent =
-      meal.result.tags[1];
+  const tagOne = span.nextElementSibling.nextElementSibling;
+  const tagTwo = tagOne.nextElementSibling;
+
+  if (meal.result.tags && meal.result.tags.length > 0) {
+    if (meal.result.tags[0]) {
+      tagOne.textContent = meal.result.tags[0];
+    } else {
+      tagOne.classList.add("d-none");
+    }
+
+    if (meal.result.tags[1]) {
+      tagTwo.textContent = meal.result.tags[1];
+    } else {
+      tagTwo.classList.add("d-none");
+    }
+  } else {
+    tagOne.classList.add("d-none");
+    tagTwo.classList.add("d-none");
   }
   numItems.textContent = `${meal.result.ingredients.length} items`;
   let cartona = "";
@@ -281,11 +291,427 @@ export function displayMeal(meal) {
     `;
   }
   instructionsContainer.innerHTML = cartonaTwo;
-  const video = document.querySelector("iframe");
-
+  const videoSection = document.getElementById("video-section");
+  const video = videoSection.querySelector("iframe");
   const videoUrl = meal.result.youtube;
 
-  const videoId = new URL(videoUrl).searchParams.get("v");
-  video.setAttribute("src", `https://www.youtube.com/embed/${videoId}`);
+  if (videoUrl) {
+    try {
+      const videoId = new URL(videoUrl).searchParams.get("v");
+
+      if (videoId) {
+        videoSection.classList.remove("d-none");
+
+        setTimeout(() => {
+          video.setAttribute("src", `https://www.youtube.com/embed/${videoId}`);
+        }, 300);
+      } else {
+        videoSection.classList.add("d-none");
+      }
+    } catch (error) {
+      videoSection.classList.add("d-none");
+    }
+  } else {
+    videoSection.classList.add("d-none");
+  }
 }
-// search
+// display scanner search by word
+const productsGrid = document.getElementById("products-grid");
+
+export async function scannerSearch(data) {
+  console.log(data);
+
+  let cartona = "";
+  header.textContent = "Product Scanner";
+  headPara.textContent = "Search packaged foods by name or barcode";
+  if (data.length !== 0) {
+    for (let i = 0; i < data.length; i++) {
+      cartona += `<div 
+  class="product-card bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer group" 
+  data-barcode="${data[i].barcode}" 
+> 
+  <div 
+    class="relative h-40 bg-gray-100 flex items-center justify-center overflow-hidden" 
+  > 
+    ${
+      data[i].image
+        ? `<img 
+        class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" 
+        src="${data[i].image}" 
+        alt="${data[i].name}" 
+        loading="lazy" 
+      />`
+        : `<i class="fa-solid fa-box text-gray-400 text-4xl"></i>`
+    } 
+
+    <!-- Nutri-Score Badge --> 
+    ${
+      data[i].nutritionGrade == "unknown"
+        ? ""
+        : `<div 
+            class="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded uppercase"
+          >
+            Nutri-Score ${data[i].nutritionGrade}
+          </div>`
+    }
+
+    <!-- NOVA Badge --> 
+    ${
+      data[i].novaGroup
+        ? `<div 
+      class="absolute top-2 right-2 bg-lime-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center" 
+      title="NOVA ${data[i].novaGroup}" 
+    > 
+      ${data[i].novaGroup} 
+    </div>`
+        : ""
+    }
+  </div> 
+
+  <div class="p-4"> 
+    <p 
+      class="text-xs text-emerald-600 font-semibold mb-1 truncate" 
+    > 
+      ${data[i].brand} 
+    </p> 
+
+    <h3 
+      class="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-emerald-600 transition-colors" 
+    > 
+      ${data[i].name} 
+    </h3> 
+${
+  data[i].nutrients.calories
+    ? ` <div 
+      class="flex items-center gap-3 text-xs text-gray-500 mb-3" 
+    > 
+      <span>
+        <i class="fa-solid fa-fire mr-1"></i>${Math.floor(data[i].nutrients.calories.toFixed())}  kcal/100g
+      </span> 
+    </div> `
+    : ""
+}
+   
+
+    <!-- Mini Nutrition --> 
+    <div class="grid grid-cols-4 gap-1 text-center"> 
+      <div class="bg-emerald-50 rounded p-1.5"> 
+        <p class="text-xs font-bold text-emerald-700">${data[i].nutrients.protein.toFixed(1)}g</p> 
+        <p class="text-[10px] text-gray-500">Protein</p> 
+      </div> 
+
+      <div class="bg-blue-50 rounded p-1.5"> 
+        <p class="text-xs font-bold text-blue-700">${data[i].nutrients.carbs.toFixed(1)}g</p> 
+        <p class="text-[10px] text-gray-500">Carbs</p> 
+      </div> 
+
+      <div class="bg-purple-50 rounded p-1.5"> 
+        <p class="text-xs font-bold text-purple-700">${data[i].nutrients.fat.toFixed(1)}g</p> 
+        <p class="text-[10px] text-gray-500">Fat</p> 
+      </div> 
+
+      <div class="bg-orange-50 rounded p-1.5"> 
+        <p class="text-xs font-bold text-orange-700">${data[i].nutrients.sugar.toFixed(1)}g</p> 
+        <p class="text-[10px] text-gray-500">Sugar</p> 
+      </div> 
+    </div> 
+  </div> 
+</div>`;
+    }
+    productsGrid.innerHTML = cartona;
+  } else {
+    productsGrid.innerHTML = `<div id="products-empty"  class="py-12 ">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="text-3xl text-gray-400" data-fa-i2svg=""><svg class="svg-inline--fa fa-box-open" data-prefix="fas" data-icon="box-open" role="img" viewBox="0 0 640 512" aria-hidden="true" data-fa-i2svg=""><path fill="currentColor" d="M560.3 237.2c10.4 11.8 28.3 14.4 41.8 5.5 14.7-9.8 18.7-29.7 8.9-44.4l-48-72c-2.8-4.2-6.6-7.7-11.1-10.2L351.4 4.7c-19.3-10.7-42.8-10.7-62.2 0L88.8 116c-5.4 3-9.7 7.4-12.6 12.8L27.7 218.7c-12.6 23.4-3.8 52.5 19.6 65.1l33 17.7 0 53.3c0 23 12.4 44.3 32.4 55.7l176 99.7c19.6 11.1 43.5 11.1 63.1 0l176-99.7c20.1-11.4 32.4-32.6 32.4-55.7l0-117.5zm-240-9.8L170.2 144 320.3 60.6 470.4 144 320.3 227.4zm-41.5 50.2l-21.3 46.2-165.8-88.8 25.4-47.2 161.7 89.8z"></path></svg></i>
+                        </div>
+                        <p class="text-gray-500 text-lg mb-2">No products to display</p>
+                        <p class="text-gray-400 text-sm">Search for a product or browse by category</p>
+                    </div>
+                </div>`;
+  }
+}
+const nutritionFactsContainer = document.getElementById(
+  "nutrition-facts-container",
+);
+export async function displayNutrition(nutritionData) {
+  let data = nutritionData.data;
+  console.log(data);
+
+  nutritionFactsContainer.innerHTML = `<p class="text-sm text-gray-500 mb-4">Per serving</p>
+
+                  <div
+                    class="text-center py-4 mb-4 bg-linear-to-br from-emerald-50 to-teal-50 rounded-xl"
+                  >
+                    <p class="text-sm text-gray-600">Calories per serving</p>
+                    <p class="text-4xl font-bold text-emerald-600">${data.perServing.calories.toFixed()}</p>
+                    <p class="text-xs text-gray-500 mt-1">Total: ${data.totals.calories.toFixed()} cal</p>
+                  </div>
+
+                  <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                        <span class="text-gray-700">Protein</span>
+                      </div>
+                      <span class="font-bold text-gray-900">${data.perServing.protein.toFixed()}g</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2">
+                      <div
+                        class="bg-emerald-500 h-2 rounded-full"
+                        style="width: 84%"
+                      ></div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <span class="text-gray-700">Carbs</span>
+                      </div>
+                      <span class="font-bold text-gray-900">${data.perServing.carbs.toFixed()}g</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2">
+                      <div
+                        class="bg-blue-500 h-2 rounded-full"
+                        style="width: 17%"
+                      ></div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+                        <span class="text-gray-700">Fat</span>
+                      </div>
+                      <span class="font-bold text-gray-900">${data.perServing.fat.toFixed()}g</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2">
+                      <div
+                        class="bg-purple-500 h-2 rounded-full"
+                        style="width: 12%"
+                      ></div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-orange-500"></div>
+                        <span class="text-gray-700">Fiber</span>
+                      </div>
+                      <span class="font-bold text-gray-900">${data.perServing.fiber.toFixed()}g</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2">
+                      <div
+                        class="bg-orange-500 h-2 rounded-full"
+                        style="width: 14%"
+                      ></div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-pink-500"></div>
+                        <span class="text-gray-700">Sugar</span>
+                      </div>
+                      <span class="font-bold text-gray-900">${data.perServing.sugar.toFixed()}g</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2">
+                      <div
+                        class="bg-pink-500 h-2 rounded-full"
+                        style="width: 24%"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div class="mt-6 pt-6 border-t border-gray-100">
+                    <h3 class="text-sm font-semibold text-gray-900 mb-3">
+                      other
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                      <div class="flex justify-between">
+                        <span class="text-gray-600">Cholesterol</span>
+                        <span class="font-medium">${data.perServing.cholesterol.toFixed()}mg</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="text-gray-600">Sodium</span>
+                        <span class="font-medium">${data.perServing.sodium.toFixed()}mg</span>
+                      </div>
+                    </div>
+                  </div>`;
+}
+
+// modal card
+export async function showCard(data) {
+  console.log(data);
+
+  const modalBrand = document.getElementById("modal-brand");
+  const modalName = document.getElementById("modal-name");
+  const modalQuantity = document.getElementById("modal-quantity");
+
+  // Nutri-Score elements
+  const nutriScore = document.getElementById("nutri-score");
+  const modalScoreBadge = document.getElementById("modal-score-badge");
+  const modalScore = document.getElementById("modal-score");
+
+  // NOVA elements
+  const novaScore = document.getElementById("nova-score");
+  const modalNovaBadge = document.getElementById("modal-nova-badge");
+  const modalNova = document.getElementById("modal-nova");
+
+  const modalCalories = document.getElementById("modal-calories");
+  const modalProtein = document.getElementById("modal-protein");
+  const modalCarbs = document.getElementById("modal-carbs");
+  const modalFat = document.getElementById("modal-fat");
+  const modalSugar = document.getElementById("modal-sugar");
+  const modalSaturatedFat = document.getElementById("modal-saturated-fat");
+  const modalFiber = document.getElementById("modal-fiber");
+  const modalSalt = document.getElementById("modal-salt");
+
+  const productModalImage = document.querySelector(".product-modal-image");
+
+  // ---------- Image ----------
+  if (!data.image) {
+    productModalImage.innerHTML = `
+      <div class="flex items-center justify-center h-full w-full p-4">
+        <i class="text-4xl text-gray-400 fa-solid fa-box"></i>
+      </div>
+    `;
+  } else {
+    productModalImage.innerHTML = `
+      <img id="modal-image" src="${data.image}" alt="${data.name}" />
+    `;
+  }
+
+  // ---------- Brand / Name / Quantity ----------
+  modalBrand.textContent = data.brand || "Unknown Brand";
+  modalName.textContent = data.name || "Unknown Product";
+
+  if (data.quantity) {
+    modalQuantity.textContent = data.quantity;
+    modalQuantity.style.display = "block";
+  } else {
+    modalQuantity.style.display = "none";
+  }
+
+  // ---------- Nutri-Score ----------
+  const validGrades = ["a", "b", "c", "d", "e"];
+  const rawGrade = data.nutritionGrade?.toLowerCase();
+  const grade = validGrades.includes(rawGrade) ? rawGrade : null;
+
+  // امسح أي كلاس لون قديم من مرة سابقة (المودال بيتعاد استخدامه)
+  const gradeClasses = ["grade-a", "grade-b", "grade-c", "grade-d", "grade-e"];
+  modalScoreBadge.classList.remove(...gradeClasses);
+  nutriScore.classList.remove(...gradeClasses);
+
+  if (grade) {
+    nutriScore.style.display = "flex";
+
+    modalScoreBadge.textContent = grade.toUpperCase();
+    modalScoreBadge.classList.add(`grade-${grade}`);
+    nutriScore.classList.add(`grade-${grade}`); // يلوّن خلفية الصندوق كله
+
+    const scoreText = {
+      a: "Excellent",
+      b: "Good",
+      c: "Average",
+      d: "Poor",
+      e: "Bad",
+    };
+
+    modalScore.textContent = scoreText[grade];
+  } else {
+    // مفيش grade صحيح -> اخفي الصندوق بالكامل بدل ما تعرض "UNKNOWN" مقطوعة
+    nutriScore.style.display = "none";
+  }
+
+  // ---------- NOVA ----------
+  // عدّل اسم الحقل ده حسب شكل الداتا الفعلي عندك (data.nova, data.novaGroup, ...)
+  const rawNova = data.nova ?? data.novaGroup;
+  const nova = [1, 2, 3, 4].includes(Number(rawNova)) ? Number(rawNova) : null;
+
+  const novaClasses = ["nova-1", "nova-2", "nova-3", "nova-4"];
+  modalNovaBadge.classList.remove(...novaClasses);
+  novaScore.classList.remove(...novaClasses);
+
+  if (nova) {
+    novaScore.style.display = "flex";
+
+    modalNovaBadge.textContent = nova;
+    modalNovaBadge.classList.add(`nova-${nova}`);
+    novaScore.classList.add(`nova-${nova}`); // يلوّن خلفية الصندوق كله
+
+    const novaText = {
+      1: "Unprocessed",
+      2: "Processed ingredients",
+      3: "Processed",
+      4: "Ultra-processed",
+    };
+
+    modalNova.textContent = novaText[nova];
+  } else {
+    novaScore.style.display = "none";
+  }
+
+  // ---------- Nutrition ----------
+  if (data.nutrients) {
+    modalCalories.textContent =
+      data.nutrients.calories != null
+        ? Math.round(data.nutrients.calories)
+        : "0";
+
+    modalProtein.textContent =
+      data.nutrients.protein != null
+        ? `${data.nutrients.protein.toFixed(1)}g`
+        : "0.0g";
+
+    modalCarbs.textContent =
+      data.nutrients.carbs != null
+        ? `${data.nutrients.carbs.toFixed(1)}g`
+        : "0.0g";
+
+    modalFat.textContent =
+      data.nutrients.fat != null ? `${data.nutrients.fat.toFixed(1)}g` : "0.0g";
+
+    modalSugar.textContent =
+      data.nutrients.sugar != null
+        ? `${data.nutrients.sugar.toFixed(1)}g`
+        : "0.0g";
+
+    modalSaturatedFat.textContent =
+      data.nutrients.saturatedFat != null
+        ? `${data.nutrients.saturatedFat.toFixed(1)}g`
+        : "0.0g";
+
+    modalFiber.textContent =
+      data.nutrients.fiber != null
+        ? `${data.nutrients.fiber.toFixed(1)}g`
+        : "0.0g";
+
+    modalSalt.textContent =
+      data.nutrients.sodium != null
+        ? `${data.nutrients.sodium.toFixed(2)}g`
+        : "0.00g";
+  }
+  modalCalories.textContent = data.nutrients.calories.toFixed();
+  modalProtein.textContent = `${data.nutrients.protein.toFixed(1)}g`;
+  modalCarbs.textContent = `${data.nutrients.carbs.toFixed(1)}g`;
+  modalFat.textContent = `${data.nutrients.fat.toFixed(1)}g`;
+  modalSugar.textContent = `${data.nutrients.sugar.toFixed(1)}g`;
+  if (data.nutrients.fat) {
+    modalSaturatedFat.textContent = `${data.nutrients.fat.toFixed(1)}g`;
+  } else {
+    modalSaturatedFat.textContent = `0.00g`;
+  }
+  if (data.nutrients.fiber) {
+    modalFiber.textContent = `${data.nutrients.fiber.toFixed(1)}g`;
+  } else {
+    modalFiber.textContent = `0.00g`;
+  }
+  if (data.nutrients.salt) {
+    modalSalt.textContent = `${data.nutrients.salt.toFixed(2)}g`;
+  } else {
+    modalSalt.textContent = `0.00g`;
+  }
+}
+
+/*
+      // <span>
+      //   <i class="fa-solid fa-weight-scale mr-1"></i>250g
+      // </span>  */
