@@ -326,13 +326,13 @@ document
 
     const barcode = card.dataset.barcode;
     // console.log(barcode);
-const productData = await getDataBarcode(barcode);
+    const productData = await getDataBarcode(barcode);
 
-if (productData.result) {
-  currentProduct = productData.result;
-  showCard(currentProduct);
-  openProductModal();
-}
+    if (productData.result) {
+      currentProduct = productData.result;
+      showCard(currentProduct);
+      openProductModal();
+    }
   });
 // modal close
 document.getElementById("modal-close").addEventListener("click", function () {
@@ -379,7 +379,7 @@ async function searchBarcode() {
     scannerSearch([currentProduct]);
     openProductModal();
   } else {
-    showToast("Product not found in database","red");
+    showToast("Product not found in database", "red");
   }
 }
 
@@ -395,17 +395,22 @@ barcodeInput.addEventListener("keydown", (e) => {
 
 // toster fun
 
-function showToast(message) {
+function showToast(message, color) {
   const oldToast = document.querySelector(".toast-notification");
 
   if (oldToast) {
     oldToast.remove();
   }
   const toast = document.createElement("div");
-  toast.className =
-    "fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 toast-notification";
-  toast.textContent = message;
-
+  if (color === "red") {
+    toast.className =
+      "fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 toast-notification";
+    toast.textContent = message;
+  } else if (color === "blue") {
+    toast.className =
+      "fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 toast-notification";
+    toast.textContent = message;
+  }
   document.body.append(toast);
   setTimeout(() => {
     toast.remove();
@@ -434,10 +439,7 @@ logMealBtn.addEventListener("click", async function () {
     ),
   );
 
-  showMealMModal(
-    mealNutritionData.data,
-    mealDetailsAdd.thumbnail,
-  );
+  showMealMModal(mealNutritionData.data, mealDetailsAdd.thumbnail);
 });
 // log this food
 const logFoodBtn = document.getElementById("log-this-food");

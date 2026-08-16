@@ -716,16 +716,32 @@ export function addFoodLogEntry(entry) {
 }
 
 export function removeFoodLogEntry(id) {
-  todayLog = todayLog.filter(
-    (item) => item.id !== id,
-  );
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      todayLog = todayLog.filter(
+        (item) => item.id !== id
+      );
 
-  localStorage.setItem(
-    "foodLog",
-    JSON.stringify(todayLog),
-  );
+      renderFoodLog();
+      updateWeeklyOverview();
 
-  renderFoodLog();
+      Swal.fire({
+        title: "Deleted!",
+        text: "The meal has been deleted.",
+        icon: "success",
+        timer: 1200,
+        showConfirmButton: false,
+      });
+    }
+  });
 }
 document
   .getElementById("clear-foodlog")
