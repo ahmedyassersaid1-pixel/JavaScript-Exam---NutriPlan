@@ -293,7 +293,6 @@ for (let i = 0; i < Filters.length; i++) {
 `;
 
     let data = await getScannerInput(e.target.dataset.grade);
-
     scannerSearch(data);
   });
 }

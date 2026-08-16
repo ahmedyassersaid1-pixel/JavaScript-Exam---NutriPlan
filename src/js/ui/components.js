@@ -976,6 +976,13 @@ export function showMealMModal(data, image) {
   });
 
   confirmBtn.addEventListener("click", () => {
+    Swal.fire({
+  title: "Meal Logged!",
+  text: "Your meal has been logged successfully.",
+  draggable: true,
+    timer: 1000
+
+});
     addFoodLogEntry({
       id: Date.now().toString(),
       name: data.recipeName,
