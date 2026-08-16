@@ -25,6 +25,10 @@ import {
   scannerSearch,
   displayNutrition,
   showCard,
+  displayFoodLogDetails,
+  showMealMModal,
+  updateWeeklyOverview,
+  addFoodLogEntry,
 } from "./ui/components.js";
 
 const loading = document.getElementById("app-loading-overlay");
@@ -38,7 +42,11 @@ const scannerSection = document.getElementById("products-section");
 const foodLogSection = document.getElementById("foodlog-section");
 const categorySection = document.getElementById("meal-categories-section");
 const searchFilterSection = document.getElementById("search-filters-section");
-
+const lis = document.querySelectorAll("li");
+const mealDetails = document.getElementById("meal-details");
+//
+let mealDetailsAdd;
+let currentProduct = null;
 function showSection(sectionToShow) {
   const sections = [
     mealSection,
@@ -60,7 +68,25 @@ function showSection(sectionToShow) {
     sectionToShow.classList.remove("d-none");
   }
 }
+// url link
+function navigate(section) {
+  history.pushState({}, "", `?section=${section}`);
 
+  if (section === "meals") {
+    activeLink(lis[0]);
+    showSection(mealSection);
+    mealDetails?.classList.add("d-none");
+  } else if (section === "products") {
+    activeLink(lis[1]);
+    showSection(scannerSection);
+    mealDetails?.classList.add("d-none");
+  } else if (section === "foodlog") {
+    activeLink(lis[2]);
+    showSection(foodLogSection);
+    mealDetails?.classList.add("d-none");
+  }
+}
+// show active link
 function activeLink(link) {
   for (let index = 0; index < lis.length; index++) {
     lis[index].children[0].classList.remove("bg-emerald-50");
@@ -79,12 +105,24 @@ function activeLink(link) {
 
 let mealId;
 let meals = await getMeals();
-let area = await getAreas();
-let categories = await getCategories();
 
-displayMeals(meals);
-displayAreas(area.results);
-displayCategories(categories);
+if (meals.length > 0) {
+  displayMeals(meals);
+} else {
+  console.log("No meals available");
+}
+let area = await getAreas();
+if (area.results.length > 0) {
+  displayAreas(area.results);
+} else {
+  console.log("No areas available");
+}
+let categories = await getCategories();
+if (categories.length > 0) {
+  displayCategories(categories);
+} else {
+  console.log("No categories available");
+}
 
 loading.classList.add("loading");
 
@@ -93,9 +131,11 @@ recipesContainer.addEventListener("click", async function (e) {
 
   if (card !== null) {
     mealId = card.dataset.mealId;
+
     let meal = await getMealById(mealId);
     // console.log(meal);
-    // console.log(meal.result.ingredients);
+    mealDetailsAdd = meal.result;
+    // console.log(mealDetailsAdd);
     const ingredients = meal.result.ingredients.map((item) => {
       return `${item.measure} ${item.ingredient}`;
     });
@@ -186,6 +226,15 @@ for (let i = 0; i < iconClick.length; i++) {
   iconClick[i].addEventListener("click", async function (e) {
     const card = e.target.closest(".category-card");
     const category = card.dataset.category;
+    recipesContainer.innerHTML = `<div class="col-span-full flex items-center justify-center h-64">
+    <div class="lds-ellipsis">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>`;
+
     let searchCat = await searchCategoey(category);
 
     displayMeals(searchCat.results);
@@ -194,19 +243,15 @@ for (let i = 0; i < iconClick.length; i++) {
 }
 
 // ul links
-const lis = document.querySelectorAll("li");
-const mealDetails = document.getElementById("meal-details");
-for (let i = 0; i < lis.length; i++) {
-  lis[i].addEventListener("click", function (e) {
-    activeLink(e.currentTarget);
-    mealDetails?.classList.add("d-none");
 
+for (let i = 0; i < lis.length; i++) {
+  lis[i].addEventListener("click", function () {
     if (i === 0) {
-      showSection(mealSection);
+      navigate("meals");
     } else if (i === 1) {
-      showSection(scannerSection);
+      navigate("products");
     } else if (i === 2) {
-      showSection(foodLogSection);
+      navigate("foodlog");
     }
   });
 }
@@ -229,6 +274,49 @@ productSearchInput.addEventListener("keydown", async function (e) {
     scannerSearch(data);
   }
 });
+// scanner sec filter score
+const productsGrid = document.getElementById("products-grid");
+
+const Filters = document.querySelectorAll(".nutri-score-filter");
+
+for (let i = 0; i < Filters.length; i++) {
+  Filters[i].addEventListener("click", async function (e) {
+    productsGrid.innerHTML = `
+  <div class="col-span-full flex items-center justify-center h-64">
+    <div class="lds-ellipsis">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+`;
+
+    let data = await getScannerInput(e.target.dataset.grade);
+
+    scannerSearch(data);
+  });
+}
+const FiltersCategory = document.querySelectorAll(".product-category-btn");
+for (let i = 0; i < FiltersCategory.length; i++) {
+  FiltersCategory[i].addEventListener("click", async function (e) {
+    // console.log(e.target.dataset.grade);
+    productsGrid.innerHTML = `
+  <div class="col-span-full flex items-center justify-center h-64">
+    <div class="lds-ellipsis">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+`;
+    productsGrid.innerHTML = `<div class="lds-ellipsis" ><div></div><div></div><div></div><div></div></div>`;
+    let data = await getScannerInput(e.target.dataset.category);
+    scannerSearch(data);
+  });
+}
+
 // modal open
 
 document
@@ -239,10 +327,13 @@ document
 
     const barcode = card.dataset.barcode;
     // console.log(barcode);
-    const productData = await getDataBarcode(barcode);
-    // console.log(productData.result);
-    showCard(productData.result);
-    openProductModal();
+const productData = await getDataBarcode(barcode);
+
+if (productData.result) {
+  currentProduct = productData.result;
+  showCard(currentProduct);
+  openProductModal();
+}
   });
 // modal close
 document.getElementById("modal-close").addEventListener("click", function () {
@@ -271,3 +362,159 @@ function openProductModal() {
 function closeProductModal() {
   document.getElementById("product-modal").classList.remove("show");
 }
+// search by barcode
+const barcodeInput = document.getElementById("barcode-input");
+const searchBarcodeBtn = document.getElementById("lookup-barcode-btn");
+
+async function searchBarcode() {
+  const barcode = barcodeInput.value.trim();
+
+  if (!barcode) return;
+
+  const data = await getDataBarcode(barcode);
+
+  if (data.result) {
+    currentProduct = data.result;
+
+    showCard(currentProduct);
+    scannerSearch([currentProduct]);
+    openProductModal();
+  } else {
+    showToast("Product not found in database");
+  }
+}
+
+searchBarcodeBtn.addEventListener("click", searchBarcode);
+
+// Enter
+barcodeInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    searchBarcode();
+  }
+});
+
+// toster fun
+
+function showToast(message) {
+  const oldToast = document.querySelector(".toast-notification");
+
+  if (oldToast) {
+    oldToast.remove();
+  }
+  const toast = document.createElement("div");
+  toast.className =
+    "fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 toast-notification";
+  toast.textContent = message;
+
+  document.body.append(toast);
+  setTimeout(() => {
+    toast.remove();
+  }, 1000);
+}
+// foodlog section
+const foodDate = document.getElementById("foodlog-date");
+function getTodayDate() {
+  const today = new Date();
+
+  return today.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  });
+}
+foodDate.textContent = getTodayDate();
+// add meal btn
+const logMealBtn = document.getElementById("log-meal-btn");
+
+logMealBtn.addEventListener("click", async function () {
+  const mealNutritionData = await getNutritionData(
+    mealDetailsAdd.name,
+    mealDetailsAdd.ingredients.map(
+      (item) => `${item.measure} ${item.ingredient}`,
+    ),
+  );
+
+  showMealMModal(
+    mealNutritionData.data,
+    mealDetailsAdd.thumbnail,
+  );
+});
+// log this food
+const logFoodBtn = document.getElementById("log-this-food");
+
+logFoodBtn.addEventListener("click", function () {
+  if (!currentProduct) return;
+
+  const nutrients = currentProduct.nutrients || {};
+
+  addFoodLogEntry({
+    id: Date.now().toString(),
+    name: currentProduct.name,
+    image: currentProduct.image || "",
+    servings: 1,
+    calories: Number(nutrients.calories || 0),
+    protein: Number(nutrients.protein || 0),
+    carbs: Number(nutrients.carbs || 0),
+    fat: Number(nutrients.fat || 0),
+  });
+
+  closeProductModal();
+});
+// week call
+updateWeeklyOverview();
+// quick btn
+const quickLogBtns = document.querySelectorAll(".quick-log-btn");
+
+quickLogBtns.forEach((btn) => {
+  btn.addEventListener("click", function () {
+    const section = this.dataset.section;
+
+    if (section === "meal") {
+      navigate("meals");
+    } else if (section === "scanner") {
+      navigate("products");
+    } else if (section === "custom") {
+      // custom modal
+    }
+  });
+});
+// back btn
+const backBtn = document.getElementById("back-to-meals-btn");
+backBtn.addEventListener("click", function () {
+  navigate("meals");
+});
+// //////////
+function loadSectionFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const section = params.get("section");
+
+  if (section === "products") {
+    navigateWithoutHistory("products");
+  } else if (section === "foodlog") {
+    navigateWithoutHistory("foodlog");
+  } else {
+    navigateWithoutHistory("meals");
+  }
+}
+
+function navigateWithoutHistory(section) {
+  mealDetails?.classList.add("d-none");
+
+  if (section === "meals") {
+    activeLink(lis[0]);
+    showSection(mealSection);
+  } else if (section === "products") {
+    activeLink(lis[1]);
+    showSection(scannerSection);
+  } else if (section === "foodlog") {
+    activeLink(lis[2]);
+    showSection(foodLogSection);
+  }
+}
+
+loadSectionFromUrl();
+
+window.addEventListener("popstate", function () {
+  loadSectionFromUrl();
+});

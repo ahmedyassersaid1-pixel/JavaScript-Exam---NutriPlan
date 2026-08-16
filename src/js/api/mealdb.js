@@ -2,12 +2,19 @@
 export async function getMeals() {
   try {
     const res = await fetch(
-      `https://nutriplan-api.vercel.app/api/meals/search?q=chicken&page=1&limit=25`,
+      "https://nutriplan-api.vercel.app/api/meals/search?q=chicken&page=1&limit=25",
     );
-    const mealData = await res.json();
-    return mealData.results;
+
+    if (!res.ok) {
+      throw new Error(`API Error: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    return data.results;
   } catch (error) {
-    throw new Error(error);
+    console.error("getMeals error:", error);
+    return [];
   }
 }
 // areas api
@@ -125,10 +132,10 @@ export async function getDataBarcode(barcode) {
       `https://nutriplan-api.vercel.app/api/products/barcode/${barcode}`,
     );
     const data = await res.json();
-    console.log(JSON.stringify(data, null, 2));
     // console.log(data);
     return data;
   } catch (error) {
-    throw new Error(error);
+    throw error;
+    return null;
   }
 }

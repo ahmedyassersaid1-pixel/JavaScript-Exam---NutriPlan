@@ -800,26 +800,31 @@
               id="product-categories"
             >
               <button
+              data-category="snacks"
                 class="product-category-btn px-4 py-2 bg-emerald-100 text-emerald-700 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-emerald-200 transition-all"
               >
                 <i class="fa-solid fa-cookie mr-1.5"></i>Snacks
               </button>
               <button
+              data-category="beverages"
                 class="product-category-btn px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-blue-200 transition-all"
               >
                 <i class="fa-solid fa-glass-water mr-1.5"></i>Beverages
               </button>
               <button
+              data-category="breakfast"
                 class="product-category-btn px-4 py-2 bg-amber-100 text-amber-700 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-amber-200 transition-all"
               >
                 <i class="fa-solid fa-bread-slice mr-1.5"></i>Breakfast
               </button>
               <button
+              data-category="desserts"
                 class="product-category-btn px-4 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-purple-200 transition-all"
               >
                 <i class="fa-solid fa-ice-cream mr-1.5"></i>Desserts
               </button>
               <button
+                data-category="dairy"
                 class="product-category-btn px-4 py-2 bg-rose-100 text-rose-700 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-rose-200 transition-all"
               >
                 <i class="fa-solid fa-cheese mr-1.5"></i>Dairy
@@ -923,10 +928,13 @@
                   <span class="text-sm font-semibold text-gray-700"
                     >Calories</span
                   >
-                  <span class="text-sm text-gray-500">0 / 2000 kcal</span>
+                  <span id="calories-details" class="text-sm text-gray-500"
+                    >0 / 2000 kcal</span
+                  >
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
                   <div
+                    id="calories-progress"
                     class="bg-emerald-500 h-2.5 rounded-full"
                     style="width: 0%"
                   ></div>
@@ -938,10 +946,13 @@
                   <span class="text-sm font-semibold text-gray-700"
                     >Protein</span
                   >
-                  <span class="text-sm text-gray-500">0 / 50 g</span>
+                  <span id="protein-details" class="text-sm text-gray-500"
+                    >0 / 50 g</span
+                  >
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
                   <div
+                    id="protein-progress"
                     class="bg-blue-500 h-2.5 rounded-full"
                     style="width: 0%"
                   ></div>
@@ -951,10 +962,13 @@
               <div class="bg-amber-50 rounded-xl p-4">
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-sm font-semibold text-gray-700">Carbs</span>
-                  <span class="text-sm text-gray-500">0 / 250 g</span>
+                  <span id="carbs-details" class="text-sm text-gray-500"
+                    >0 / 250 g</span
+                  >
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
                   <div
+                    id="carbs-progress"
                     class="bg-amber-500 h-2.5 rounded-full"
                     style="width: 0%"
                   ></div>
@@ -964,10 +978,13 @@
               <div class="bg-purple-50 rounded-xl p-4">
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-sm font-semibold text-gray-700">Fat</span>
-                  <span class="text-sm text-gray-500">0 / 65 g</span>
+                  <span id="fat-details" class="text-sm text-gray-500"
+                    >0 / 65 g</span
+                  >
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
                   <div
+                    id="fat-progress"
                     class="bg-purple-500 h-2.5 rounded-full"
                     style="width: 0%"
                   ></div>
@@ -978,7 +995,10 @@
             <!-- Logged Items -->
             <div class="border-t border-gray-200 pt-4">
               <div class="flex items-center justify-between mb-3">
-                <h4 class="text-sm font-semibold text-gray-700">
+                <h4
+                  id="logged-items-count"
+                  class="text-sm font-semibold text-gray-700"
+                >
                   Logged Items (0)
                 </h4>
                 <button
@@ -1011,15 +1031,50 @@
               <i class="fa-solid fa-calendar-week text-indigo-500 mr-2"></i>
               Weekly Overview
             </h3>
+            <!-- week -->
+            <div id="weekly-chart" class="h-64 rounded-xl p-5">
+              <div class="weekly-days">
+                <div class="weekly-day">
+                  <p class="weekly-day-name" data-day-name="0"></p>
+                  <p class="weekly-date" data-day-date="0"></p>
+                  <p class="weekly-calories" data-day-calories="0">0 kcal</p>
+                </div>
 
-            <div
-              id="weekly-chart"
-              class="h-64 bg-gray-50 rounded-xl flex items-center justify-center"
-            >
-              <!-- Chart placeholder - JS will populate with Plotly -->
-              <div class="text-center text-gray-400">
-                <i class="fa-solid fa-chart-line text-4xl mb-2"></i>
-                <p>Weekly nutrition chart will appear here</p>
+                <div class="weekly-day">
+                  <p class="weekly-day-name" data-day-name="1"></p>
+                  <p class="weekly-date" data-day-date="1"></p>
+                  <p class="weekly-calories" data-day-calories="1">0 kcal</p>
+                </div>
+
+                <div class="weekly-day">
+                  <p class="weekly-day-name" data-day-name="2"></p>
+                  <p class="weekly-date" data-day-date="2"></p>
+                  <p class="weekly-calories" data-day-calories="2">0 kcal</p>
+                </div>
+
+                <div class="weekly-day">
+                  <p class="weekly-day-name" data-day-name="3"></p>
+                  <p class="weekly-date" data-day-date="3"></p>
+                  <p class="weekly-calories" data-day-calories="3">0 kcal</p>
+                </div>
+
+                <div class="weekly-day">
+                  <p class="weekly-day-name" data-day-name="4"></p>
+                  <p class="weekly-date" data-day-date="4"></p>
+                  <p class="weekly-calories" data-day-calories="4">0 kcal</p>
+                </div>
+
+                <div class="weekly-day">
+                  <p class="weekly-day-name" data-day-name="5"></p>
+                  <p class="weekly-date" data-day-date="5"></p>
+                  <p class="weekly-calories" data-day-calories="5">0 kcal</p>
+                </div>
+
+                <div class="weekly-day bg-indigo-100 rounded-xl">
+                  <p class="weekly-day-name" data-day-name="6"></p>
+                  <p class="weekly-date " data-day-date="6"></p>
+                  <p class="weekly-calories col-1" data-day-calories="6">0 kcal</p>
+                </div>
               </div>
             </div>
           </div>
@@ -1028,12 +1083,14 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               class="quick-log-btn bg-white rounded-xl p-4 border-2 border-gray-200 hover:border-emerald-500 transition-all text-left flex items-center gap-4"
+              data-section="meal"
             >
               <div
                 class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center"
               >
                 <i class="fa-solid fa-plus text-emerald-600 text-xl"></i>
               </div>
+
               <div>
                 <p class="font-semibold text-gray-900">Log a Meal</p>
                 <p class="text-sm text-gray-500">Add from recipes</p>
@@ -1042,12 +1099,14 @@
 
             <button
               class="quick-log-btn bg-white rounded-xl p-4 border-2 border-gray-200 hover:border-teal-500 transition-all text-left flex items-center gap-4"
+              data-section="scanner"
             >
               <div
                 class="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center"
               >
                 <i class="fa-solid fa-barcode text-teal-600 text-xl"></i>
               </div>
+
               <div>
                 <p class="font-semibold text-gray-900">Scan Product</p>
                 <p class="text-sm text-gray-500">Use barcode scanner</p>
@@ -1056,12 +1115,14 @@
 
             <button
               class="quick-log-btn bg-white rounded-xl p-4 border-2 border-gray-200 hover:border-purple-500 transition-all text-left flex items-center gap-4"
+              data-section="custom"
             >
               <div
                 class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center"
               >
                 <i class="fa-solid fa-pencil text-purple-600 text-xl"></i>
               </div>
+
               <div>
                 <p class="font-semibold text-gray-900">Custom Entry</p>
                 <p class="text-sm text-gray-500">Add custom food</p>
@@ -1070,7 +1131,6 @@
           </div>
         </div>
       </section>
-      ```html
       <section id="product-modal" class="product-modal">
         <div class="modal-content">
           <button class="modal-close" id="modal-close">&times;</button>
@@ -1198,16 +1258,37 @@
               </div>
             </div>
           </div>
-
+          <div class="bg-gray-50 rounded-xl p-5 mb-6">
+            <h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <i class="text-gray-600" data-fa-i2svg=""
+                ><svg
+                  class="svg-inline--fa fa-list"
+                  data-prefix="fas"
+                  data-icon="list"
+                  role="img"
+                  viewBox="0 0 512 512"
+                  aria-hidden="true"
+                  data-fa-i2svg=""
+                >
+                  <path
+                    fill="currentColor"
+                    d="M40 48C26.7 48 16 58.7 16 72l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24L40 48zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L192 64zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zM16 232l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0z"
+                  ></path></svg
+              ></i>
+              Ingredients
+            </h3>
+            <p class="text-sm text-gray-600 leading-relaxed" id="modal-ingred">
+              Organic Tofu (Water, Organic _Soya_ Beans 36%, Nigari).
+            </p>
+          </div>
           <!-- Actions -->
           <div class="modal-actions">
-            <button class="log-food-btn">+ &nbsp; Log This Food</button>
+            <button class="log-food-btn" id="log-this-food">+ &nbsp; Log This Food</button>
 
             <button class="close-btn" id="modal-close-bottom">Close</button>
           </div>
         </div>
       </section>
-      ```
     </div>
 
     <!-- Main JavaScript Entry Point -->
