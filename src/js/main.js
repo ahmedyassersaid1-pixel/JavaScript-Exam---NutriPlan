@@ -379,7 +379,7 @@ async function searchBarcode() {
     scannerSearch([currentProduct]);
     openProductModal();
   } else {
-    showToast("Product not found in database");
+    showToast("Product not found in database","red");
   }
 }
 
